@@ -6,3 +6,5 @@ services:
       - "80:80"
     volumes:
       - "./src:/app/src"
+      # :cachedで変更が即時反映されるようにしておく。
+      - "./pyproject.toml:/app/pyproject.toml:cached"
