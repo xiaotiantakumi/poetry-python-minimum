@@ -1,27 +1,38 @@
-以下参考に
-https://timesaving.hatenablog.com/entry/2022/10/03/150000
+# はじめに
 
-docker build -t poetry-fastapi-docker-image -f Dockerfile .
-
-以下公式からインストールしようとしたけどうまくいかない。
-https://python-poetry.org/docs/
-
-こちらのコマンドでうまくいった。
-curl --ssl https://install.python-poetry.org | python3
-
-.zshrc にパスを通す処理を記述しておく。
-
-# poetry
+サーバーを起動
 
 ```
-export PATH="/Users/takumi/.local/bin:$PATH"
+docker-compose up -d
 ```
 
-Dcokerfile 内で指定している python のバージョンに注意する
+以下にアクセスする
+http://localhost/hello-world
+
+{"message":"Hello world5"}
+こちらが表示されます。
+
+## ソースの変更
+
+新しいエンドポイントの作成は src 配下で行ってください。
+src はディレクトリ共有されているので、ホスト側での変更とコンテナー内での変更が即時反映されます。
+例えばホスト側での変更が即時に反映されるかを確認するために、src.py のレスポンスを修正してみて確認してください。
 
 ```
-FROM python:3.10-slim AS builder
+ HelloWorld(message="Hello world5")
 ```
+
+## poetry
+
+pyproject.toml もディレクトリ共有されています。
+初回はホスト側の pyproject.toml がコンテナーにコピーされます。(Dockerfile に COPY コマンドを書いているので確認してください。)
+サーバーが起動されると、ホストとコンテナの変更がそれぞれに適応されます。
+ホスト側の環境を汚さないためには、コンテナの中に入って poetry を使い必要なモジュールを追加してください。
+
+# その他
+
+Docker イメージとコンテナーの操作のチートシートとして使っているだけ。
+このリポジトリーに直接関係はない。
 
 ## Docker image の作成
 
@@ -29,6 +40,11 @@ FROM python:3.10-slim AS builder
 
 ```
 docker build -t fastapi-sample -f Dockerfile .
+```
+
+イメージの作成でキャッシュを使わないようにするパターン
+
+```
 docker build --no-cache -t fastapi-sample -f Dockerfile .
 ```
 
@@ -40,10 +56,16 @@ docker container run -it -d -p 127.0.0.1:8080:80 --name fastapi-sample-container
 
 ## イメージに入って確認
 
-```
-docker run -it 6d66fff6857a /bin/bash
+イメージからコンテナー起動してそのまま入る
 
-docker exec -it 1 /bin/bash
+```
+docker run -it <image id> /bin/bash
+```
+
+起動中のコンテナーに入る
+
+```
+docker exec -it <container id> /bin/bash
 ```
 
 ## 削除系
