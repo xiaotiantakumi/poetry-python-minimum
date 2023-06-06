@@ -1,0 +1,9 @@
+{
+  "name": "python3-minimum",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "customizations": {
+    "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"]
+  },
+  "service": "api",
+  "workspaceFolder": "/app/src"
+}

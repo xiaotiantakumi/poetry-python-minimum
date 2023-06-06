@@ -2,7 +2,9 @@ version: "3"
 services:
   api:
     restart: always
-    build: .
+    build: 
+      context: .
+      dockerfile: .devcontainer/Dockerfile
     container_name: 'python3-minimum'
     ports:
       - "80:80"
