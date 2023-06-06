@@ -1,6 +1,6 @@
 FROM python:3.10-slim AS builder
 LABEL version="0.1"
-LABEL description="api server"
+LABEL description="This is a sample Dockerfile."
 
 # Poetryのインストール先を指定する環境変数.
 ENV POETRY_HOME="/opt/poetry"
@@ -38,9 +38,3 @@ RUN poetry install --only main
 
 # src配下でpoetryを実行したいので移動しておく
 WORKDIR /app/src
-
-# Docker イメージが実行されるときにホスト側に公開するポート番号を指定します。
-# これにより、Docker コンテナが起動した際に、外部からアクセスできるようになります。こ80番ポートが公開されます。
-EXPOSE 80
-# uvicornで--reloadすることによりアプリケーションの変更がホットリロードされるようになる
-CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80","--reload"]
